@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2b1055">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Bubble Woods">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <title>Bubble Woods</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Kanit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="game-wrapper">
+        <div class="top-bar">
+            <div class="stat-item">⭐ <span id="top-level">1</span></div>
+            <div class="stat-item">🪙 <span id="top-coins">0</span></div>
+            <div class="stat-item">🌻 <span id="top-stars">0/20</span></div>
+            <div class="stat-item">🏆 <span id="top-high">0</span></div>
+        </div>
+
+        <div class="timer-container">
+            <div class="timer-circle" id="time-display">60</div>
+            <div class="score-board" id="score-display">0</div>
+        </div>
+
+        <div class="top-right-controls">
+            <span class="control-btn" id="btn-pause" title="Pause (P)">▌▌</span>
+            <span class="control-btn" id="btn-sound" title="Sound">🔊</span>
+        </div>
+
+        <div class="user-welcome hidden" id="user-display">👤 Guest</div>
+
+        <canvas id="gameCanvas" width="800" height="520"></canvas>
+
+        <!-- หน้าแรก (หน้าปก) -->
+        <div id="screen-home" class="overlay cover">
+            <div class="cover-bubbles">
+                <span class="cb" style="--x:6%;--s:46px;--d:0s;--c:#fcd34d;--b:#f59e0b">🔥</span>
+                <span class="cb" style="--x:16%;--s:30px;--d:3s;--c:#f472b6;--b:#db2777">🍄</span>
+                <span class="cb" style="--x:27%;--s:54px;--d:6s;--c:#a78bfa;--b:#7c3aed">⭐</span>
+                <span class="cb" style="--x:40%;--s:34px;--d:1.5s;--c:#fcd34d;--b:#f59e0b">🔥</span>
+                <span class="cb" style="--x:55%;--s:50px;--d:4.5s;--c:#f472b6;--b:#db2777">🍄</span>
+                <span class="cb" style="--x:68%;--s:32px;--d:2s;--c:#a78bfa;--b:#7c3aed">⭐</span>
+                <span class="cb" style="--x:79%;--s:56px;--d:7s;--c:#fcd34d;--b:#f59e0b">🔥</span>
+                <span class="cb" style="--x:90%;--s:40px;--d:3.5s;--c:#f472b6;--b:#db2777">🍄</span>
+            </div>
+            <div class="cover-art">🐿️</div>
+            <h1 class="cover-title">Bubble Woods</h1>
+            <div class="cover-tap">TAP TO START</div>
+        </div>
+
+        <!-- หน้าล็อกอิน -->
+        <div id="screen-login" class="overlay hidden">
+            <div class="result-card">
+                <div class="mascot-head">🐿️</div>
+                <h1 class="result-title">LOGIN</h1>
+                <p class="hint">กรุณากรอกชื่อเข้าใช้งาน</p>
+                <div class="input-group">
+                    <input type="text" id="username-input" class="input-field" placeholder="ชื่อผู้เล่น..." maxlength="12" autocomplete="off">
+                </div>
+                <button class="btn-ok" id="btn-login">ENTER</button>
+            </div>
+        </div>
+
+        <!-- หน้าเริ่มเกม -->
+        <div id="screen-start" class="overlay hidden">
+            <div class="result-card">
+                <div class="mascot-head">🐿️</div>
+                <h1 class="result-title">Bubble Woods</h1>
+                <p class="hint">ยินดีต้อนรับคุณ <span id="welcome-name" class="accent"></span>!</p>
+                <p class="hint small">กดค้างเพื่อเล็ง แล้วปล่อยเพื่อยิง (P = หยุดเกม)</p>
+                <div class="btn-container">
+                    <button class="btn-ok" id="btn-play">PLAY</button>
+                    <button class="btn-ok btn-secondary" id="btn-switch">Change Player</button>
+                    <button class="btn-ok btn-secondary hidden" id="btn-install">📲 Install App</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าหยุดเกม -->
+        <div id="screen-pause" class="overlay hidden">
+            <div class="result-card">
+                <h1 class="result-title">Pause</h1>
+                <div class="btn-container">
+                    <button class="btn-ok" id="btn-resume">Resume</button>
+                    <button class="btn-ok btn-danger" id="btn-end">End Game</button>
+                    <button class="btn-ok btn-secondary" id="btn-home-pause">🏠 Home</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าสรุปผล -->
+        <div id="screen-over" class="overlay hidden">
+            <div class="result-card">
+                <div class="mascot-head" id="result-icon">🐿️🎉</div>
+                <h1 class="result-title" id="result-title">Nice!</h1>
+                <div class="result-sub" id="result-subtitle">Time Out!</div>
+                <div class="final-score" id="final-score">0</div>
+                <div class="record" id="result-record"></div>
+                <div class="btn-container">
+                    <button class="btn-ok" id="btn-again">PLAY AGAIN</button>
+                    <button class="btn-ok btn-secondary" id="btn-home-over">🏠 Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- โหลดตามลำดับ (ไม่ใช้ ES modules เพื่อให้ดับเบิลคลิกเปิดไฟล์ได้เลย) -->
+    <script src="config.js"></script>
+    <script src="storage.js"></script>
+    <script src="sound.js"></script>
+    <script src="grid.js"></script>
+    <script src="ui.js"></script>
+    <script src="game.js"></script>
+    <script src="main.js"></script>
+    <script src="pwa.js"></script>
+</body>
+</html>
